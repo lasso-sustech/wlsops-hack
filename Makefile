@@ -12,7 +12,7 @@ build-krn:
 	$(MAKE) -C $(KDIR) M=$(PWD)
 
 build-usr:
-	make -o wlsctrl wlstrl.c
+	gcc -o wlsctrl wlsctrl.c
 
 insmod:
 	sudo insmod wlsops_hook.ko

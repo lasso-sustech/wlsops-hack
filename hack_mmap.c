@@ -8,13 +8,13 @@
 #include "hack_mmap.h"
 
 struct dentry *file;
- 
+
 struct mmap_info
 {
-    char *data;            
-    int reference;      
+    char *data;
+    int reference;
 };
- 
+
 void mmap_open(struct vm_area_struct *vma)
 {
     struct mmap_info *info = (struct mmap_info *)vma->vm_private_data;
@@ -27,12 +27,12 @@ void mmap_close(struct vm_area_struct *vma)
     info->reference--;
 }
  
-static int mmap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
+static int mmap_fault(struct vm_fault *vmf)
 {
     struct page *page;
     struct mmap_info *info;    
      
-    info = (struct mmap_info *)vma->vm_private_data;
+    info = (struct mmap_info *)vmf->vma->vm_private_data;
     if (!info->data)
     {
         printk("No data\n");

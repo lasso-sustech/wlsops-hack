@@ -8,3 +8,5 @@
 *.mod.c
 *.symvers
 *.order
+
+wlsctrl
