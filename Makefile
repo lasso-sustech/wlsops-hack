@@ -1,15 +1,18 @@
 # IEEE 802.11 Wireless Operations Hacker
 ifneq ($(KERNELRELEASE),)
 	obj-m := wlsops_hook.o
-	wlsops_hook-objs := hack_entry.o wlsops.o
+	wlsops_hook-objs := hack_entry.o hack_mmap.o wlsops.o
 else
 	PWD := $(shell pwd)
 	KDIR := /lib/modules/$(shell uname -r)/build
 
-all:build-krn
+all:build-krn build-usr
 
 build-krn:
 	$(MAKE) -C $(KDIR) M=$(PWD)
+
+build-usr:
+	make -o wlsctrl wlstrl.c
 
 insmod:
 	sudo insmod wlsops_hook.ko
@@ -21,6 +24,7 @@ dmesg:
 	sudo dmesg
 
 clean:
+	rm -f wlsctrl
 	rm -f .cache.mk .*.cmd
 	rm -f *.o *.o.cmd *.ko *.mod.c *.symvers *.order
 	rm -rf .tmp_versions
