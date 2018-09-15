@@ -12,7 +12,8 @@ static int __init wlsops_init(void)
     int ret;
 
     ret = wls_hacker_init();
-
+    ret = hack_mmap_init();
+    
     return 0;
 }
 
