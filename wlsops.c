@@ -1,4 +1,5 @@
 #include "wlsops.h"
+#include "WLSINC.h"
 
 struct ieee80211_local *wls_local = NULL;
 struct ieee80211_vif *wls_vif = NULL;

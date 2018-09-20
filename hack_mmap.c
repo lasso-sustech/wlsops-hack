@@ -5,14 +5,9 @@
 #include <linux/slab.h>
 #include <linux/mm.h>
 #include "hack_mmap.h"
+#include "WLSINC.h"
 
-struct dentry *__file;
-
-struct mmap_info
-{
-    char *data;
-    int reference; //count accessing user
-};
+static struct dentry *__file;
 
 void mmap_open(struct vm_area_struct *vma)
 {
@@ -33,7 +28,7 @@ static int mmap_fault(struct vm_fault *vmf)
      
     info = (struct mmap_info *)vmf->vma->vm_private_data;
      
-    page = virt_to_page(info->data);
+    page = virt_to_page(info->blk);
      
     get_page(page);
     vmf->page = page;
@@ -62,9 +57,9 @@ static int fop_open_mmap(struct inode *inode, struct file *fd)
     const unsigned char fd_info[] = "Hello World";//fd->f_path.dentry->d_name.name;
 
     struct mmap_info *info = kmalloc(sizeof(struct mmap_info), GFP_KERNEL);
-    info->data = (char *)get_zeroed_page(GFP_KERNEL);
+    info->blk = (info_blk *)get_zeroed_page(GFP_KERNEL);
     
-    memcpy(info->data, fd_info, strlen(fd_info));   // initialize the memory with "Hello World"
+    memcpy(info->blk, fd_info, strlen(fd_info));   // initialize the memory with "Hello World"
     fd->private_data = info;                        // attach memory to debugfs fd
     return 0;
 }
@@ -73,7 +68,7 @@ static int fop_close_mmap(struct inode *inode, struct file *fd)
 {
     struct mmap_info *info = fd->private_data;
 
-    free_page((unsigned long)info->data);
+    free_page((unsigned long)info->blk);
     kfree(info);
     fd->private_data = NULL;
     return 0;
