@@ -19,7 +19,7 @@ install:
 	sudo sh -c 'echo install wlsops insmod /lib/modules/$(shell uname -r)/updates/wlsops_hook.ko \
 		> /lib/modprobe.d/wlsops.conf'
 	sudo cp -f wlsctrl/wlsctrl /usr/bin/wlsctrl
-	depmod -a
+	sudo depmod -a
 
 modprobe:
 	sudo modprobe wlsops_hook
