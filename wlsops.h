@@ -12,6 +12,6 @@ extern struct ieee80211_vif *wls_vif;
 extern struct ieee80211_hw *wls_hw;
 
 int wls_hacker_init(void);
-int wls_conf_tx(u16 ac, u8 aifs, u16 cw_min, u16 cw_max, u16 txop);
+int wls_conf_tx(u16 ac, u16 cw_min, u16 cw_max, u16 txop, u8 aifs);
 
 #endif

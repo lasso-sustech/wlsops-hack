@@ -6,6 +6,7 @@
 
 #define WLS_KEYWORD "[LAB1112]"
 #define KERN_LOG KERN_NOTICE WLS_KEYWORD
+#define printh(...) printk(KERN_LOG __VA_ARGS__)
 
 #define WLS_PAGE_NUM    1
 #define WLS_RING_SIZE   (WLS_PAGE_NUM*PAGE_SIZE)

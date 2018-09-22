@@ -9,4 +9,4 @@
 *.symvers
 *.order
 
-wlsctrl
+wlsctrl/wlsctrl

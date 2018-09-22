@@ -14,6 +14,8 @@ static struct task_struct *kThread;
 
 int read_loop(void *data)
 {
+    info_blk *blk = mmap_access();
+
     while(1)
     {
         set_current_state(TASK_UNINTERRUPTIBLE);
@@ -22,7 +24,13 @@ int read_loop(void *data)
             break;
         }
         schedule();
-        //TODO: read memory here
+        if (mmap_isNotLocked())
+        {
+            wls_conf_tx(blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], \
+                        blk->word_ptr[3], blk->byte_ptr[9]);
+            printh("Accessed Once\n");
+            mmap_setLocked();
+        }
     }
     return 0;
 }
@@ -35,7 +43,7 @@ static int __init wlsops_init(void)
     ret = hack_mmap_init();
 
     kThread = kthread_create(read_loop, NULL, "wls_hack");
-    //TODO: promise no error when create
+    //promise no error when create
     wake_up_process(kThread);
     
     return 0;
@@ -45,7 +53,7 @@ static void __exit wlsops_fini(void)
 {
     kthread_stop(kThread);
     hack_mmap_fini();
-    printk("Now exit~\n");
+    printh("Now exit~\n");
 }
 
 module_init(wlsops_init);

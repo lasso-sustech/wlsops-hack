@@ -16,7 +16,7 @@ int wls_hacker_init()
             wls_vif = wdev_to_ieee80211_vif(dev->ieee80211_ptr);
             wls_local = (struct ieee80211_local *)wdev_priv(dev->ieee80211_ptr);
             wls_hw = &wls_local->hw;
-            printk("find one driver: %s\n", dev->name);
+            printh("find one driver: %s\n", dev->name);
             break;
         }
     }
@@ -26,7 +26,7 @@ int wls_hacker_init()
     return 0;
 }
 
-int wls_conf_tx(u16 ac, u8 aifs, u16 cw_min, u16 cw_max, u16 txop)
+int wls_conf_tx(u16 ac, u16 cw_min, u16 cw_max, u16 txop, u8 aifs)
 {
     struct ieee80211_tx_queue_params wls_params = 
     {

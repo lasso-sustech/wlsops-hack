@@ -5,9 +5,24 @@
 #include <linux/slab.h>
 #include <linux/mm.h>
 #include "hack_mmap.h"
-#include "WLSINC.h"
 
 static struct dentry *__file;
+static struct mmap_info *info;
+
+inline info_blk* mmap_access()
+{
+    return info->blk;
+}
+
+inline int mmap_isNotLocked()
+{
+    return info->blk->byte_ptr[15] & 0x80;
+}
+
+inline void mmap_setLocked()
+{
+    info->blk->byte_ptr[15] &= 0x00;
+}
 
 void mmap_open(struct vm_area_struct *vma)
 {
@@ -54,12 +69,12 @@ int mmap_ops_mount(struct file *fd, struct vm_area_struct *vma)
 
 static int fop_open_mmap(struct inode *inode, struct file *fd)
 {
-    const unsigned char fd_info[] = "Hello World";//fd->f_path.dentry->d_name.name;
+    // const unsigned char fd_info[] = "Hello World";//fd->f_path.dentry->d_name.name;
 
-    struct mmap_info *info = kmalloc(sizeof(struct mmap_info), GFP_KERNEL);
+    info = kmalloc(sizeof(struct mmap_info), GFP_KERNEL);
     info->blk = (info_blk *)get_zeroed_page(GFP_KERNEL);
     
-    memcpy(info->blk, fd_info, strlen(fd_info));   // initialize the memory with "Hello World"
+    // memcpy(info->blk, fd_info, strlen(fd_info));   // initialize the memory with "Hello World"
     fd->private_data = info;                        // attach memory to debugfs fd
     return 0;
 }

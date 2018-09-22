@@ -12,7 +12,10 @@ build-krn:
 	$(MAKE) -C $(KDIR) M=$(PWD)
 
 build-usr:
-	gcc -o wlsctrl wlsctrl.c
+	$(MAKE) -C wlsctrl
+
+install:
+	@echo "Not Implemented yet..."
 
 insmod:
 	sudo insmod wlsops_hook.ko
@@ -24,7 +27,7 @@ dmesg:
 	sudo dmesg
 
 clean:
-	rm -f wlsctrl
+	rm -f wlsctrl/wlsctrl
 	rm -f .cache.mk .*.cmd
 	rm -f *.o *.o.cmd *.ko *.mod.c *.symvers *.order
 	rm -rf .tmp_versions
