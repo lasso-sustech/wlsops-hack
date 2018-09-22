@@ -40,7 +40,7 @@ static int mmap_fault(struct vm_fault *vmf)
 {
     struct page *page;
     struct mmap_info *info;
-     
+
     info = (struct mmap_info *)vmf->vma->vm_private_data;
      
     page = virt_to_page(info->blk);
@@ -69,13 +69,10 @@ int mmap_ops_mount(struct file *fd, struct vm_area_struct *vma)
 
 static int fop_open_mmap(struct inode *inode, struct file *fd)
 {
-    // const unsigned char fd_info[] = "Hello World";//fd->f_path.dentry->d_name.name;
-
     info = kmalloc(sizeof(struct mmap_info), GFP_KERNEL);
     info->blk = (info_blk *)get_zeroed_page(GFP_KERNEL);
     
-    // memcpy(info->blk, fd_info, strlen(fd_info));   // initialize the memory with "Hello World"
-    fd->private_data = info;                        // attach memory to debugfs fd
+    fd->private_data = info;    // attach memory to debugfs fd
     return 0;
 }
 

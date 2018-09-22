@@ -24,6 +24,9 @@ install:
 modprobe:
 	sudo modprobe wlsops_hook
 
+insmod:
+	sudo insmod wlsops_hook.ko
+
 rmmod:
 	sudo rmmod wlsops_hook
 
