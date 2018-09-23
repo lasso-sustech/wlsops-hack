@@ -1,5 +1,7 @@
 #ifndef __HACK_MMAP_H__
 #define __HACK_MMAP_H__
+
+#include <linux/kthread.h>
 #include "WLSINC.h"
 
 #ifndef VM_RESERVED
@@ -9,6 +11,8 @@
 #define DBGFS_FILE "wlsctrl"
 
 extern struct dentry  *file;
+extern struct task_struct *kThread;
+
 int hack_mmap_init(void);
 void hack_mmap_fini(void);
 inline info_blk* mmap_access(void);

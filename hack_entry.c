@@ -10,7 +10,7 @@
 #include "wlsops.h"
 #include "WLSINC.h"
 
-static struct task_struct *kThread;
+struct task_struct *kThread;
 
 int read_loop(void *data)
 {
@@ -43,15 +43,12 @@ static int __init wlsops_init(void)
     ret = hack_mmap_init();
 
     kThread = kthread_create(read_loop, NULL, "wls_hack");
-    //promise no error when create
-    wake_up_process(kThread);
     
     return 0;
 }
 
 static void __exit wlsops_fini(void)
 {
-    kthread_stop(kThread);
     hack_mmap_fini();
     printh("Now exit~\n");
 }
