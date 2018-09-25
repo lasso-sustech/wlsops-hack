@@ -12,6 +12,8 @@
 
 extern struct dentry  *file;
 extern struct task_struct *kThread;
+extern struct mmap_info *info;
+extern int read_loop(void *data);
 
 int hack_mmap_init(void);
 void hack_mmap_fini(void);

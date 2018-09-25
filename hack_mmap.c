@@ -8,7 +8,6 @@
 #include "hack_mmap.h"
 
 static struct dentry *__file;
-static struct mmap_info *info;
 
 inline info_blk* mmap_access()
 {
@@ -70,22 +69,16 @@ int mmap_ops_mount(struct file *fd, struct vm_area_struct *vma)
 
 static int fop_open_mmap(struct inode *inode, struct file *fd)
 {
-    info = kmalloc(sizeof(struct mmap_info), GFP_KERNEL);
-    info->blk = (info_blk *)get_zeroed_page(GFP_KERNEL);
-
     fd->private_data = info;    // attach memory to debugfs fd
+    kThread = kthread_create(read_loop, NULL, "wls_hack");
     wake_up_process(kThread);
     return 0;
 }
 
 static int fop_close_mmap(struct inode *inode, struct file *fd)
 {
-    struct mmap_info *info = fd->private_data;
-    
+    // struct mmap_info *info = fd->private_data;
     kthread_stop(kThread);
-    free_page((unsigned long)info->blk);
-    kfree(info);
-
     fd->private_data = NULL;
     return 0;
 }
