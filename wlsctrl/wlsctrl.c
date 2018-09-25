@@ -46,7 +46,7 @@ int setTxLast()
     while(cnt<MAX_TIMEOUT)
     {
         ++cnt;
-        if(isNotReading)
+        if(isNotReading())
         {
             memcpy(w_blk, tx_last, sizeof(tx_last));
             setReadable();
