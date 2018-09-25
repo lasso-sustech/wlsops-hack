@@ -74,7 +74,7 @@ int w_init()
         return -1;
     }
 
-    return 0;
+    return fd;
 }
 
 int main(int argc, char const *argv[])

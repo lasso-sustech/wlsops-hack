@@ -14,6 +14,7 @@ typedef union
     uint64_t long_ptr[2];
 }info_blk;
 
+int w_init(void);
 int setTxPrior(void);
 int setTxLast(void);
 

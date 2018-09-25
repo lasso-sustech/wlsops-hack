@@ -25,16 +25,16 @@ int read_loop(void *data)
         
         if (mmap_isNotWriting())
         {
-            printh("ac-%d, min-%d, max-%d, txop-%d, aifs-%d\n", \
+            /* printh("ac-%d, min-%d, max-%d, txop-%d, aifs-%d\n", \
                     blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], \
-                    blk->word_ptr[3], blk->byte_ptr[8]);
+                    blk->word_ptr[3], blk->byte_ptr[8]); */
             wls_conf_tx(blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], \
                         blk->word_ptr[3], blk->byte_ptr[8]);
             mmap_setWritable();
         }
     }
 
-    printh("Reading Loop Actually Exit\n");
+    // printh("Reading Loop Actually Exit\n");
     return 0;
 }
 
