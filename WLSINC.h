@@ -4,7 +4,7 @@
 #include <linux/kern_levels.h>
 #include <asm/page.h>
 
-#define WLS_KEYWORD "[LAB1112]"
+#define WLS_KEYWORD "LAB1112: "
 #define KERN_LOG KERN_NOTICE WLS_KEYWORD
 #define printh(...) printk(KERN_LOG __VA_ARGS__)
 

@@ -24,12 +24,15 @@ int read_loop(void *data)
             break;
         }
         schedule();
-        if (mmap_isNotLocked())
+        if (mmap_isNotWriting())
         {
+            printh("ac-%d, min-%d, max-%d, txop-%d, aifs-%d\n", \
+                    blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], \
+                    blk->word_ptr[3], blk->byte_ptr[8]);
             wls_conf_tx(blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], \
-                        blk->word_ptr[3], blk->byte_ptr[9]);
+                        blk->word_ptr[3], blk->byte_ptr[8]);
             printh("Accessed Once\n");
-            mmap_setLocked();
+            mmap_setWritable();
         }
     }
     return 0;
@@ -51,6 +54,7 @@ static void __exit wlsops_fini(void)
 {
     hack_mmap_fini();
     printh("Now exit~\n");
+    printh("\n");
 }
 
 module_init(wlsops_init);

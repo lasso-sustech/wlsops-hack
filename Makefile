@@ -31,7 +31,7 @@ rmmod:
 	sudo rmmod wlsops_hook
 
 dmesg:
-	sudo dmesg
+	sudo dmesg | grep --color "LAB1112:"
 
 clean:
 	rm -f wlsctrl/wlsctrl
