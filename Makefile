@@ -15,6 +15,7 @@ build-usr:
 	$(MAKE) -C wlsctrl
 
 install:
+	sudo mkdir -p /lib/modules/$(shell uname -r)/updates
 	sudo cp -rf wlsops_hook.ko /lib/modules/$(shell uname -r)/updates/wlsops_hook.ko
 	sudo sh -c 'echo install wlsops insmod /lib/modules/$(shell uname -r)/updates/wlsops_hook.ko \
 		> /lib/modprobe.d/wlsops.conf'
