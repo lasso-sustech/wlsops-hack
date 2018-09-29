@@ -14,7 +14,7 @@ inline info_blk* mmap_access()
     return info->blk;
 }
 
-inline int mmap_isNotWriting()
+inline int mmap_isReadable()
 {
     return info->blk->byte_ptr[15] & 0x80;
 }

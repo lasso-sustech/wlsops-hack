@@ -23,7 +23,7 @@ int read_loop(void *data)
         schedule();
         set_current_state(TASK_INTERRUPTIBLE);
         
-        if (mmap_isNotWriting())
+        if (mmap_isReadable())
         {
             /* printh("ac-%d, min-%d, max-%d, txop-%d, aifs-%d\n", \
                     blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], \

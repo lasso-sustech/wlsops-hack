@@ -35,7 +35,7 @@ dmesg:
 	sudo dmesg | grep --color "LAB1112:"
 
 clean:
-	rm -f wlsctrl/wlsctrl
+	$(MAKE) -C wlsctrl clean
 	rm -f .cache.mk .*.cmd
 	rm -f *.o *.o.cmd *.ko *.mod.c *.symvers *.order
 	rm -rf .tmp_versions

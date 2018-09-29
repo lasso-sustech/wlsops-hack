@@ -14,7 +14,7 @@ static info_blk *w_blk;
 static const char tx_prior[9] = {0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00}; //0,1,1,0,0
 static const char tx_last[9]  = {0x00, 0x00, 0xFF, 0x03, 0xFF, 0x07, 0x00, 0x00, 0x0F}; //0,1023,2047,0,15
 
-static inline int isNotReading()
+static inline int isWritable()
 {
     return (w_blk->byte_ptr[15]&0xFF) == 0x00;
 }
@@ -24,29 +24,13 @@ static inline void setReadable()
     w_blk->byte_ptr[15] |= 0x80;
 }
 
-int setTxPrior()
-{
-    int cnt = 0;
-    while(cnt<MAX_TIMEOUT)
-    {
-        ++cnt;
-        if(isNotReading())
-        {
-            memcpy(w_blk, tx_prior, sizeof(tx_prior));
-            setReadable();
-            return 0;
-        }
-    }
-    return -1;
-}
-
 int setTxLast()
 {
     int cnt = 0;
     while(cnt<MAX_TIMEOUT)
     {
         ++cnt;
-        if(isNotReading())
+        if(isWritable())
         {
             memcpy(w_blk, tx_last, sizeof(tx_last));
             setReadable();
@@ -87,7 +71,7 @@ int main(int argc, char const *argv[])
     }
 
     timing_start(tt);
-    ret = setTxPrior();
+    ret = setTxLast();
     timing_stop(tt);
     printf("%d, %ld.%06ld\n", ret, tt.result.tv_sec, tt.result.tv_usec);
 

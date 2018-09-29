@@ -18,7 +18,7 @@ extern int read_loop(void *data);
 int hack_mmap_init(void);
 void hack_mmap_fini(void);
 inline info_blk* mmap_access(void);
-inline int mmap_isNotWriting(void);
+inline int mmap_isReadable(void);
 inline void mmap_setWritable(void);
 
 #endif
