@@ -21,27 +21,24 @@ inline int mmap_isReadable()
 
 inline void mmap_setWritable()
 {
-    info->blk->byte_ptr[15] &= 0x00;
+    info->blk->byte_ptr[15] = 0x00;
 }
 
 void mmap_open(struct vm_area_struct *vma)
 {
-    struct mmap_info *info = (struct mmap_info *)vma->vm_private_data;
-    info->reference++;
+    // struct mmap_info *info = (struct mmap_info *)vma->vm_private_data;
+    // info->reference++;
 }
  
 void mmap_close(struct vm_area_struct *vma)
 {
-    struct mmap_info *info = (struct mmap_info *)vma->vm_private_data;
-    info->reference--;
+    // struct mmap_info *info = (struct mmap_info *)vma->vm_private_data;
+    // info->reference--;
 }
  
 static int mmap_fault(struct vm_fault *vmf)
 {
     struct page *page;
-    struct mmap_info *info;
-
-    info = (struct mmap_info *)vmf->vma->vm_private_data;
      
     page = virt_to_page(info->blk);
      
@@ -86,13 +83,22 @@ static int fop_close_mmap(struct inode *inode, struct file *fd)
 static ssize_t default_read_file(struct file *file, char __user *buf,
 				 size_t count, loff_t *ppos)
 {
-	return 0;
+    int ret;
+
+    if (copy_to_user(buf, info->blk, count)) {
+        ret = -EFAULT;
+    }
+    return ret;
 }
 
 static ssize_t default_write_file(struct file *file, const char __user *buf,
 				   size_t count, loff_t *ppos)
 {
-	return count;
+	if (copy_from_user(info->blk, buf, count)) {
+        return -EFAULT;
+    } else {
+        return len;
+    }
 }
 
 static const struct file_operations mmap_fops = {
