@@ -42,9 +42,6 @@ static int __init wlsops_init(void)
 {
     int ret;
 
-    info = kmalloc(sizeof(struct mmap_info), GFP_KERNEL);
-    info->blk = (info_blk *)get_zeroed_page(GFP_KERNEL);
-
     ret = wls_hacker_init();
     ret = hack_mmap_init();
 

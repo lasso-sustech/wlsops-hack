@@ -8,6 +8,7 @@
 #define MAX_TIMEOUT 1000
 #include "timing_usr.h"
 
+static int fd;
 static timing_unit tt;
 static info_blk *w_blk;
 //<little-edian> ac-16, cwMin-16, cwMax-16, txop-16, aifs-8
@@ -42,8 +43,6 @@ int setTxLast()
 
 int w_init()
 {
-    int fd;
-
     fd = open("/proc/" DBGFS_FILE, O_RDWR|O_SYNC);
     if(fd < 0)
     {
@@ -61,11 +60,17 @@ int w_init()
     return fd;
 }
 
+int w_fini()
+{
+    munmap(w_blk, sizeof(w_blk));
+    close(fd);
+}
+
 int main(int argc, char const *argv[])
 {
-    int fd, ret;
+    int ret;
     
-    if ((fd = w_init()) < 0)
+    if (w_init() < 0)
     {
         return -1;
     }
@@ -75,6 +80,10 @@ int main(int argc, char const *argv[])
     timing_stop(tt);
     printf("%d, %ld.%06ld\n", ret, tt.result.tv_sec, tt.result.tv_usec);
 
-    close(fd);
+    if (w_fini() < 0)
+    {
+        return -1;
+    }
+    
     return 0;
 }
