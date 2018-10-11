@@ -5,85 +5,63 @@
 #include <sys/mman.h>
 
 #include "wlsctrl.h"
-#define MAX_TIMEOUT 1000
-#include "timing_usr.h"
 
 static int fd;
-static timing_unit tt;
 static info_blk *w_blk;
 //<little-edian> ac-16, cwMin-16, cwMax-16, txop-16, aifs-8
 static const char tx_prior[9] = {0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00}; //0,1,1,0,0
 static const char tx_last[9]  = {0x00, 0x00, 0xFF, 0x03, 0xFF, 0x07, 0x00, 0x00, 0x0F}; //0,1023,2047,0,15
 
-static inline int isWritable()
+int setTxPrior(void)
 {
-    return (w_blk->byte_ptr[15]&0xFF) == 0x00;
+    return 0;
 }
 
-static inline void setReadable()
+int setTxNormal(void)
 {
-    w_blk->byte_ptr[15] |= 0x80;
+    return 0; 
 }
 
-int setTxLast()
+int setTxLast(void)
 {
-    int cnt = 0;
-    while(cnt<MAX_TIMEOUT)
-    {
-        ++cnt;
-        if(isWritable())
-        {
-            memcpy(w_blk, tx_last, sizeof(tx_last));
-            setReadable();
-            return 0;
-        }
-    }
-    return -1;
+    return 0;
 }
 
 int w_init()
 {
-    fd = open("/proc/" DBGFS_FILE, O_RDWR|O_SYNC);
-    if(fd < 0)
+    if( (fd=open(DBGFS_FILE, O_RDWR|O_SYNC)) <= 0 )
     {
         perror("Open call failed");
         return -1;
     }
 
-    w_blk = (info_blk *)mmap(NULL, PAGE_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-    if (w_blk == MAP_FAILED)
+    if( (w_blk=(info_blk *)mmap(NULL, sizeof(info_blk), PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0)) \
+                == MAP_FAILED )
     {
         perror("mmap operation failed");
         return -1;
     }
 
-    return fd;
+    return 0;
 }
 
-int w_fini()
+void w_fini()
 {
     munmap(w_blk, sizeof(w_blk));
     close(fd);
+    return 0;
 }
 
 int main(int argc, char const *argv[])
 {
-    int ret;
-    
     if (w_init() < 0)
     {
         return -1;
     }
 
-    timing_start(tt);
-    ret = setTxLast();
-    timing_stop(tt);
-    printf("%d, %ld.%06ld\n", ret, tt.result.tv_sec, tt.result.tv_usec);
+    // memcpy(w_blk, tx_last, sizeof(tx_last));
 
-    if (w_fini() < 0)
-    {
-        return -1;
-    }
+    w_fini();
     
     return 0;
 }

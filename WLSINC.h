@@ -23,7 +23,6 @@ typedef union
 struct mmap_info
 {
     info_blk *blk;
-    int reference; //count accessing user
-};
+}
 
 #endif

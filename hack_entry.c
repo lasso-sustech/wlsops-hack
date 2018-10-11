@@ -10,48 +10,49 @@
 #include "wlsops.h"
 #include "WLSINC.h"
 
-struct task_struct *kThread;
-struct mmap_info *info;
+static struct task_struct *kThread;
 
 int read_loop(void *data)
 {
-    info_blk *blk = mmap_access();
+    // info_blk *blk = mmap_access();
 
-    set_current_state(TASK_INTERRUPTIBLE);
-    while(!kthread_should_stop())
-    {
-        schedule();
-        set_current_state(TASK_INTERRUPTIBLE);
+    // set_current_state(TASK_INTERRUPTIBLE);
+    // while(!kthread_should_stop())
+    // {
+    //     schedule();
+    //     set_current_state(TASK_INTERRUPTIBLE);
         
-        if (mmap_isReadable())
-        {
-            /* printh("ac-%d, min-%d, max-%d, txop-%d, aifs-%d\n", \
-                    blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], \
-                    blk->word_ptr[3], blk->byte_ptr[8]); */
-            wls_conf_tx(blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], \
-                        blk->word_ptr[3], blk->byte_ptr[8]);
-            mmap_setWritable();
-        }
-    }
+    //     if (mmap_isReadable())
+    //     {
+    //         /* printh("ac-%d, min-%d, max-%d, txop-%d, aifs-%d\n", 
+    //                 blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], 
+    //                 blk->word_ptr[3], blk->byte_ptr[8]); */
+    //         wls_conf_tx(blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], 
+    //                     blk->word_ptr[3], blk->byte_ptr[8]);
+    //         mmap_setWritable();
+    //     }
+    // }
 
-    // printh("Reading Loop Actually Exit\n");
     return 0;
 }
 
 static int __init wlsops_init(void)
 {
-    int ret;
+    if ( (wls_hacker_init()<0)|(hack_mmap_init()<0) )
+    {
+        printh("HACK_ENTRY failed.\n");
+        return -1;
+    }
 
-    ret = wls_hacker_init();
-    ret = hack_mmap_init();
+    kThread=kthread_create(read_loop, NULL, "wlsops_hack");
+    wake_up_process(kThread);
 
     return 0;
 }
 
 static void __exit wlsops_fini(void)
 {
-    free_page((unsigned long)info->blk);
-    kfree(info);
+    kthread_stop(kThread);
     hack_mmap_fini();
     
     printh("Now exit~\n");

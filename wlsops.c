@@ -40,5 +40,6 @@ int wls_conf_tx(u16 ac, u16 cw_min, u16 cw_max, u16 txop, u8 aifs)
     int ret;
     
     ret = wls_local->ops->conf_tx(wls_hw, wls_vif, ac, &wls_params);
+    
     return ret;
 }

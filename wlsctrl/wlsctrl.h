@@ -3,7 +3,7 @@
 
 #include <inttypes.h>
 
-#define DBGFS_FILE  "wlsctrl"
+#define DBGFS_FILE  "/proc/wlsctrl"
 #define PAGE_SIZE   4096
 
 typedef union
@@ -15,7 +15,10 @@ typedef union
 }info_blk;
 
 int w_init(void);
+void w_fini(void);
+
 int setTxPrior(void);
+int setTxNormal(void);
 int setTxLast(void);
 
 #endif
