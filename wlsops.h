@@ -11,7 +11,16 @@ extern struct ieee80211_local *wls_local;
 extern struct ieee80211_vif *wls_vif;
 extern struct ieee80211_hw *wls_hw;
 
+struct __attribute__((__packed__)) tx_param
+{
+    uint16_t ac;
+    uint16_t cw_min;
+    uint16_t cw_max;
+    uint16_t txop;
+    uint8_t aifs;
+};
+
 int wls_hacker_init(void);
-int wls_conf_tx(u16 ac, u16 cw_min, u16 cw_max, u16 txop, u8 aifs);
+int wls_conf_tx(struct tx_param);
 
 #endif

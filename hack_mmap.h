@@ -3,11 +3,14 @@
 
 #include "WLSINC.h"
 
-// #ifndef VM_RESERVED
-// #define VM_RESERVED   (VM_DONTEXPAND | VM_DONTDUMP)
-// #endif
+#ifndef VM_RESERVED
+#define VM_RESERVED   (VM_DONTEXPAND | VM_DONTDUMP)
+#endif
 
-// #define DBGFS_FILE "wlsctrl"
+#define DBGFS_FILE "wlsctrl"
+
+inline int mmap_read(char *ptr, size_t len);
+inline void mmap_setWritable(void);
 
 int hack_mmap_init(void);
 void hack_mmap_fini(void);

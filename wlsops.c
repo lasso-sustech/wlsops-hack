@@ -26,20 +26,20 @@ int wls_hacker_init()
     return 0;
 }
 
-int wls_conf_tx(u16 ac, u16 cw_min, u16 cw_max, u16 txop, u8 aifs)
+int wls_conf_tx(struct tx_param param)
 {
     struct ieee80211_tx_queue_params wls_params = 
     {
-        .txop = txop,
-	    .cw_min = cw_min,
-	    .cw_max = cw_max,
-	    .aifs = aifs,
+        .txop = param.txop,
+	    .cw_min = param.cw_min,
+	    .cw_max = param.cw_max,
+	    .aifs = param.aifs,
         .acm = false,
         .uapsd = false
     };
     int ret;
     
-    ret = wls_local->ops->conf_tx(wls_hw, wls_vif, ac, &wls_params);
+    ret = wls_local->ops->conf_tx(wls_hw, wls_vif, param.ac, &wls_params);
     
     return ret;
 }

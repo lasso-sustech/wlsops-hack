@@ -11,27 +11,25 @@
 #include "WLSINC.h"
 
 static struct task_struct *kThread;
+static struct tx_param kParam;
 
 int read_loop(void *data)
 {
-    // info_blk *blk = mmap_access();
-
-    // set_current_state(TASK_INTERRUPTIBLE);
-    // while(!kthread_should_stop())
-    // {
-    //     schedule();
-    //     set_current_state(TASK_INTERRUPTIBLE);
+    set_current_state(TASK_INTERRUPTIBLE);
+    while(!kthread_should_stop())
+    {
+        schedule();
+        set_current_state(TASK_INTERRUPTIBLE);
         
-    //     if (mmap_isReadable())
-    //     {
-    //         /* printh("ac-%d, min-%d, max-%d, txop-%d, aifs-%d\n", 
-    //                 blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], 
-    //                 blk->word_ptr[3], blk->byte_ptr[8]); */
-    //         wls_conf_tx(blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], 
-    //                     blk->word_ptr[3], blk->byte_ptr[8]);
-    //         mmap_setWritable();
-    //     }
-    // }
+        if (mmap_read((char *)&kParam, sizeof(struct tx_param)))
+        {
+            /* printh("ac-%d, min-%d, max-%d, txop-%d, aifs-%d\n", 
+                    blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], 
+                    blk->word_ptr[3], blk->byte_ptr[8]); */
+            wls_conf_tx(kParam);
+            mmap_setWritable();
+        }
+    }
 
     return 0;
 }

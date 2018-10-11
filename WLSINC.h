@@ -23,6 +23,6 @@ typedef union
 struct mmap_info
 {
     info_blk *blk;
-}
+};
 
 #endif
