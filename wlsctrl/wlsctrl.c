@@ -9,26 +9,22 @@
 static int fd;
 static info_blk *w_blk;
 //<little-edian> ac-16, cwMin-16, cwMax-16, txop-16, aifs-8
-static const char tx_prior[9]   = {0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00}; //0,1,1,0,0
-static const char tx_normal[9]  = {0x00, 0x00, 0x03, 0x00, 0x07, 0x00, 0x00, 0x00, 0x02}; //0,3,7,0,2
-static const char tx_last[9]    = {0x00, 0x00, 0xFF, 0x03, 0xFF, 0x07, 0x00, 0x00, 0x0F}; //0,1023,2047,0,15
+const char tx_prior[9]   = {0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00}; //0,1,1,0,0
+const char tx_normal[9]  = {0x00, 0x00, 0x03, 0x00, 0x07, 0x00, 0x00, 0x00, 0x02}; //0,3,7,0,2
+const char tx_last[9]    = {0x00, 0x00, 0xFF, 0x03, 0xFF, 0x07, 0x00, 0x00, 0x0F}; //0,1023,2047,0,15
 
 static inline int mmap_write(const char *ptr, size_t len)
 {
     if ((w_blk->byte_ptr[15]&0xFF) == 0x00) //kernel read complete
     {
         memcpy(w_blk, ptr, len);
+        w_blk->byte_ptr[15] |= 0x80; //set kernel readable
         return 1;
     }
     else
     {
         return 0;
     }
-}
-
-static inline void mmap_setReadable()
-{
-    w_blk->byte_ptr[15] |= 0x80;
 }
 
 int w_writer(const char *ptr)
@@ -45,17 +41,17 @@ int w_writer(const char *ptr)
     return 0;
 }
 
-int setTxPrior(void)
+inline int setTxPrior(void)
 {
     return w_writer(tx_prior);
 }
 
-int setTxNormal(void)
+inline int setTxNormal(void)
 {
     return w_writer(tx_normal);
 }
 
-int setTxLast(void)
+inline int setTxLast(void)
 {
     return w_writer(tx_last);
 }

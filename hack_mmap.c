@@ -83,17 +83,13 @@ inline int mmap_read(char *ptr, size_t len)
     if (m_info->blk->byte_ptr[15] & 0x80) //user write complete
     {
         memcpy(ptr, m_info->blk, len);
+        m_info->blk->byte_ptr[15] = 0x00; //set user writable
         return 1;
     }
     else
     {
         return 0;
     }
-}
-
-inline void mmap_setWritable()
-{
-    m_info->blk->byte_ptr[15] = 0x00;
 }
 
 int hack_mmap_init()

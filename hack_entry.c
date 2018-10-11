@@ -24,7 +24,6 @@ int read_loop(void *data)
         if (mmap_read((char *)&kParam, sizeof(struct tx_param)))
         {
             wls_conf_tx(kParam);
-            mmap_setWritable();
         }
     }
 
