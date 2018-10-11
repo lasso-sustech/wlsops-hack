@@ -23,9 +23,6 @@ int read_loop(void *data)
         
         if (mmap_read((char *)&kParam, sizeof(struct tx_param)))
         {
-            /* printh("ac-%d, min-%d, max-%d, txop-%d, aifs-%d\n", 
-                    blk->word_ptr[0], blk->word_ptr[1], blk->word_ptr[2], 
-                    blk->word_ptr[3], blk->byte_ptr[8]); */
             wls_conf_tx(kParam);
             mmap_setWritable();
         }
