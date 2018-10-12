@@ -3,8 +3,9 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-
+#include <assert.h>
 #include "wlsctrl.h"
+#include "timing_usr.h"
 
 static int fd;
 static info_blk *w_blk;
@@ -30,10 +31,9 @@ static inline int mmap_write(const char *ptr, size_t len)
 int w_writer(const char *ptr)
 {
     int cnt = 0;
-    while(!mmap_write(ptr, 9))
+    while(mmap_write(ptr, 9)==0)
     {
-        ++cnt;
-        if(cnt>MAX_TIMEOUT)
+        if(++cnt>MAX_TIMEOUT)
         {
             return -1;
         }
@@ -41,31 +41,30 @@ int w_writer(const char *ptr)
     return 0;
 }
 
-inline int setTxPrior(void)
+int setTxPrior(void)
 {
     return w_writer(tx_prior);
 }
 
-inline int setTxNormal(void)
+int setTxNormal(void)
 {
     return w_writer(tx_normal);
 }
 
-inline int setTxLast(void)
+int setTxLast(void)
 {
     return w_writer(tx_last);
 }
 
 int w_init()
 {
-    if( (fd=open(DBGFS_FILE, O_RDWR|O_SYNC)) <= 0 )
+    if( (fd=open(DBGFS_FILE, O_RDWR|O_SYNC)) < 0 )
     {
         perror("open call failed");
         return -1;
     }
 
-    if( (w_blk=(info_blk *)mmap(NULL, sizeof(info_blk), PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, fd, 0)) \
-                == MAP_FAILED )
+    if( (w_blk=(info_blk *)mmap(NULL, sizeof(info_blk), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED )
     {
         perror("mmap operation failed");
         return -1;
@@ -82,14 +81,23 @@ void w_fini()
 
 int main(int argc, char const *argv[])
 {
+    int ret = 0;
+    timing_unit tt;
+
     if (w_init() < 0)
     {
         return -1;
     }
 
-    // memcpy(w_blk, tx_last, sizeof(tx_last));
+    timing_start(tt);
+    for (int i = 0; i < 10; ++i)
+    {
+        ret += setTxPrior();
+    }
+    timing_stop(tt);
 
-    w_fini();
+    printf("%d, %ld.%06ld\n", ret, tt.result.tv_sec, tt.result.tv_usec);
     
+    w_fini();
     return 0;
 }

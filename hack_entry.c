@@ -15,15 +15,13 @@ static struct tx_param kParam;
 
 int read_loop(void *data)
 {
-    set_current_state(TASK_INTERRUPTIBLE);
     while(!kthread_should_stop())
     {
         schedule();
-        set_current_state(TASK_INTERRUPTIBLE);
-        
-        if (mmap_read((char *)&kParam, sizeof(struct tx_param)))
+        if (mmap_read((char *)&kParam,sizeof(kParam)))
         {
-            wls_conf_tx(kParam);
+            printh("I AM YOUR FATHER.\n");
+            // wls_conf_tx(kParam);
         }
     }
 
@@ -32,13 +30,13 @@ int read_loop(void *data)
 
 static int __init wlsops_init(void)
 {
-    if ( (wls_hacker_init()<0)|(hack_mmap_init()<0) )
+    if ( (wls_hacker_init()<0) || (hack_mmap_init()<0) )
     {
         printh("HACK_ENTRY failed.\n");
         return -1;
     }
 
-    kThread=kthread_create(read_loop, NULL, "wlsops_hack");
+    kThread = kthread_create(read_loop, NULL, "wlsops_hack");
     wake_up_process(kThread);
 
     return 0;

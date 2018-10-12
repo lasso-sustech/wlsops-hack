@@ -5,7 +5,7 @@
 
 #define DBGFS_FILE  "/proc/wlsctrl"
 #define PAGE_SIZE   4096
-#define MAX_TIMEOUT 1000
+#define MAX_TIMEOUT 10000
 
 typedef union
 {
@@ -15,9 +15,14 @@ typedef union
     uint64_t long_ptr[2];
 }info_blk;
 
-inline int setTxPrior(void);
-inline int setTxNormal(void);
-inline int setTxLast(void);
+struct mmap_info
+{
+    info_blk *blk;
+};
+
+int setTxPrior(void);
+int setTxNormal(void);
+int setTxLast(void);
 
 int w_init(void);
 void w_fini(void);

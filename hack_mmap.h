@@ -10,7 +10,6 @@
 #define DBGFS_FILE "wlsctrl"
 
 inline int mmap_read(char *ptr, size_t len);
-inline void mmap_setWritable(void);
 
 int hack_mmap_init(void);
 void hack_mmap_fini(void);
