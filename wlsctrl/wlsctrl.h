@@ -5,7 +5,7 @@
 
 #define DBGFS_FILE  "/proc/wlsctrl"
 #define PAGE_SIZE   4096
-#define MAX_TIMEOUT 10000
+#define MAX_TIMEOUT 2000
 
 typedef union
 {

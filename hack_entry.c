@@ -20,8 +20,8 @@ int read_loop(void *data)
         schedule();
         if (mmap_read((char *)&kParam,sizeof(kParam)))
         {
-            printh("I AM YOUR FATHER.\n");
-            // wls_conf_tx(kParam);
+            wls_conf_tx(kParam);
+            // printh("I AM YOUR FATHER.\n");
         }
     }
 

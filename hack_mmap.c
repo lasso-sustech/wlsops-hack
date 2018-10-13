@@ -78,11 +78,11 @@ static const struct file_operations mmap_fops = {
 };
 
 /******************** CUSTOMIZED FUNCTIONS ********************/
-inline int mmap_read(char *ptr, size_t len)
+inline int mmap_read(char *dst, size_t len)
 {
     if (m_info->blk->byte_ptr[15] & 0x80) //user write complete
     {
-        memcpy(ptr, m_info->blk, len);
+        memcpy(dst, m_info->blk, len);
         m_info->blk->byte_ptr[15] = 0x00; //set user writable
         return 1;
     }

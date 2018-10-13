@@ -3,7 +3,6 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include <assert.h>
 #include "wlsctrl.h"
 #include "timing_usr.h"
 
@@ -14,11 +13,11 @@ const char tx_prior[9]   = {0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00
 const char tx_normal[9]  = {0x00, 0x00, 0x03, 0x00, 0x07, 0x00, 0x00, 0x00, 0x02}; //0,3,7,0,2
 const char tx_last[9]    = {0x00, 0x00, 0xFF, 0x03, 0xFF, 0x07, 0x00, 0x00, 0x0F}; //0,1023,2047,0,15
 
-static inline int mmap_write(const char *ptr, size_t len)
+static inline int mmap_write(const char *src, size_t len)
 {
     if ((w_blk->byte_ptr[15]&0xFF) == 0x00) //kernel read complete
     {
-        memcpy(w_blk, ptr, len);
+        memcpy(w_blk, src, len);
         w_blk->byte_ptr[15] |= 0x80; //set kernel readable
         return 1;
     }
@@ -77,27 +76,4 @@ void w_fini()
 {
     munmap(w_blk, sizeof(w_blk));
     close(fd);
-}
-
-int main(int argc, char const *argv[])
-{
-    int ret = 0;
-    timing_unit tt;
-
-    if (w_init() < 0)
-    {
-        return -1;
-    }
-
-    timing_start(tt);
-    for (int i = 0; i < 10; ++i)
-    {
-        ret += setTxPrior();
-    }
-    timing_stop(tt);
-
-    printf("%d, %ld.%06ld\n", ret, tt.result.tv_sec, tt.result.tv_usec);
-    
-    w_fini();
-    return 0;
 }
