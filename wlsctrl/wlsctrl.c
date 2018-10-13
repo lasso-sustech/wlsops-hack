@@ -4,7 +4,6 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include "wlsctrl.h"
-#include "timing_usr.h"
 
 static int fd;
 static info_blk *w_blk;
