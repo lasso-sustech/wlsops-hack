@@ -25,8 +25,8 @@ add_custom_command(
         COMMAND ${KBUILD_CMD}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         DEPENDS hack_entry.c hack_mmap.c wlsops.c VERBATIM)
-add_custom_target(module ALL DEPENDS ${DRIVER_FILE})   #defautl target
-add_custom_target(cleanup COMMAND ${KBUILD_CMD} clean) #clean
+add_custom_target(module_wlsops ALL DEPENDS ${DRIVER_FILE})   #defautl target
+add_custom_target(cleanup_wlsops COMMAND ${KBUILD_CMD} clean)        #clean
 
 # install target
 # INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DRIVER_FILE}
