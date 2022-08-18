@@ -5,7 +5,7 @@
 #include <linux/netdevice.h>
 #include <net/cfg80211.h>
 #include <net/mac80211.h>
-#include "include/ieee80211_i.h"
+#include "intrinsic/ieee80211_i.h"
 
 extern struct ieee80211_local *wls_local;
 extern struct ieee80211_vif *wls_vif;

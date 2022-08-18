@@ -54,4 +54,4 @@ static void __exit wlsops_fini(void)
 module_init(wlsops_init);
 module_exit(wlsops_fini);
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Lab1112-VLC");
+MODULE_AUTHOR("Lab525-VLC");
