@@ -25,6 +25,7 @@ make
 
 ### How to Use
 > Make sure that you have at least one wireless NIC enabled;
-1. First of all, `make insmod` to install the kernel hack module, and it will hack onto the first wireless NIC registered in the system;
+1. First of all, `make insmod` to install the built kernel modules, where `wlsops_hack` will use the first wireless NIC registered in the system;
 
 2. Run `sudo ./wlsctrl/wlsctrl` to apply the action.
+
