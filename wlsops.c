@@ -11,12 +11,12 @@ int wls_hacker_init()
 
     for_each_netdev(&init_net, dev)
     {
-        if( dev->ieee80211_ptr ) // <net/cfg80211.h>
+        if( dev->ieee80211_ptr ) // is a 802.11 device
         {
             wls_vif = wdev_to_ieee80211_vif(dev->ieee80211_ptr);
-            wls_local = (struct ieee80211_local *)wdev_priv(dev->ieee80211_ptr);
+            wls_local = (struct ieee80211_local *) wdev_priv(dev->ieee80211_ptr);
             wls_hw = &wls_local->hw;
-            printh("find one driver: %s\n", dev->name);
+            printh("find 802.11 device: %s\n", dev->name);
             break;
         }
     }
@@ -28,6 +28,7 @@ int wls_hacker_init()
 
 int wls_conf_tx(struct tx_param param)
 {
+    int ret;
     struct ieee80211_tx_queue_params wls_params = 
     {
         .txop = param.txop,
@@ -35,11 +36,10 @@ int wls_conf_tx(struct tx_param param)
 	    .cw_max = param.cw_max,
 	    .aifs = param.aifs,
         .acm = false,
-        .uapsd = false
+        .uapsd = false,
+        .mu_edca = false
     };
-    int ret;
     
     ret = wls_local->ops->conf_tx(wls_hw, wls_vif, param.ac, &wls_params);
-    
     return ret;
 }

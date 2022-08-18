@@ -14,9 +14,9 @@ extern struct ieee80211_hw *wls_hw;
 struct __attribute__((__packed__)) tx_param
 {
     uint16_t ac;
+    uint16_t txop;
     uint16_t cw_min;
     uint16_t cw_max;
-    uint16_t txop;
     uint8_t aifs;
 };
 

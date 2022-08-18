@@ -1,4 +1,4 @@
-MODNAME      := wlsops_hook
+MODNAME      := wlsops_hack
 
 obj-m        += $(MODNAME).o
 $(MODNAME)-y += hack_entry.o hack_mmap.o wlsops.o

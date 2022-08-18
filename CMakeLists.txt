@@ -16,8 +16,8 @@ if(NOT kernel_makefile)
 endif()
 
 # call Kbuild for building
-set(DRIVER_NAME wlsops_hook)
-set(DRIVER_FILE wlsops_hook.ko)
+set(DRIVER_NAME wlsops_hack)
+set(DRIVER_FILE wlsops_hack.ko)
 set(KBUILD_CMD $(MAKE) -C ${KDIR} modules M=${CMAKE_CURRENT_BINARY_DIR} src=${CMAKE_CURRENT_SOURCE_DIR})
 add_custom_command(
         OUTPUT ${DRIVER_FILE}
@@ -34,4 +34,4 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DRIVER_FILE}
 # add custom target
 add_custom_target(insmod COMMAND sudo insmod ${DRIVER_FILE})
 add_custom_target(rmmod-inotify COMMAND sudo rmmod ${DRIVER_NAME})
-add_custom_target(dmesg COMMAND sudo dmesg | grep --color "LAB525:")
+add_custom_target(dmesg COMMAND sudo dmesg | grep --color "wlsops:")
