@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 project(wlsops-hack VERSION 0.1.0)
+add_subdirectory("iwlmvm")
 add_subdirectory("wlsctrl")
 
 # setup variables
@@ -28,8 +29,8 @@ add_custom_target(module ALL DEPENDS ${DRIVER_FILE})   #defautl target
 add_custom_target(cleanup COMMAND ${KBUILD_CMD} clean) #clean
 
 # install target
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DRIVER_FILE}
-        DESTINATION ${INSTALL_DIRECTORY})
+# INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DRIVER_FILE}
+#         DESTINATION ${INSTALL_DIRECTORY})
         
 # add custom target
 add_custom_target(insmod COMMAND sudo insmod ${DRIVER_FILE})

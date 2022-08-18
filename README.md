@@ -22,10 +22,9 @@ mkdir build
 cd build && cmake ..
 make
 ```
-> `make install` will put kernel module into default system folder for the usage of `modprobe`, and `wlsctrl` into `/usr/local/bin`.
 
 ### How to Use
 > Make sure that you have at least one wireless NIC enabled;
-1. First of all, `make insmod` or `modprobe wlsops_hack` to install the kernel hack module, and it will hack onto the first wireless NIC registered in the system;
+1. First of all, `make insmod` to install the kernel hack module, and it will hack onto the first wireless NIC registered in the system;
 
 2. Run `sudo ./wlsctrl/wlsctrl` to apply the action.
