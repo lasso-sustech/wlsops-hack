@@ -21,7 +21,6 @@ int read_loop(void *data)
         if (mmap_read((char *)&kParam,sizeof(kParam)))
         {
             wls_conf_tx(kParam);
-            // printh("I AM YOUR FATHER.\n");
         }
     }
 
@@ -30,7 +29,7 @@ int read_loop(void *data)
 
 static int __init wlsops_init(void)
 {
-    if ( (wls_hacker_init()<0) || (hack_mmap_init()<0) )
+    if ( (wls_hack_init()<0) || (hack_mmap_init()<0) )
     {
         printh("HACK_ENTRY failed.\n");
         return -1;

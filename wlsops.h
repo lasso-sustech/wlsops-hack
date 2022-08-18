@@ -20,7 +20,7 @@ struct __attribute__((__packed__)) tx_param
     uint8_t aifs;
 };
 
-int wls_hacker_init(void);
+int wls_hack_init(void);
 int wls_conf_tx(struct tx_param);
 
 #endif

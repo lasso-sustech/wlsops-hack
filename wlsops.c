@@ -5,7 +5,7 @@ struct ieee80211_local *wls_local = NULL;
 struct ieee80211_vif *wls_vif = NULL;
 struct ieee80211_hw *wls_hw = NULL;
 
-int wls_hacker_init()
+int wls_hack_init()
 {
     struct net_device *dev;
 
@@ -22,7 +22,11 @@ int wls_hacker_init()
     }
 
     if (!wls_local)
+    {
+        printh("No 802.11 device found.\n");
         return -1;
+    }
+    
     return 0;
 }
 
@@ -35,9 +39,9 @@ int wls_conf_tx(struct tx_param param)
 	    .cw_min = param.cw_min,
 	    .cw_max = param.cw_max,
 	    .aifs = param.aifs,
-        .acm = false,
-        .uapsd = false,
-        .mu_edca = false
+        // .acm = false,
+        // .uapsd = false,
+        // .mu_edca = false
     };
     
     ret = wls_local->ops->conf_tx(wls_hw, wls_vif, param.ac, &wls_params);
