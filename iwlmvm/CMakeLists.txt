@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 project(iwlmvm-mod VERSION 0.1.0)
+set(FETCHCONTENT_QUIET FALSE)
 
 # download Linux kernel v5.15
 set(LINUX_URL "https://github.com/torvalds/linux/archive/refs/tags/v5.15.zip")
@@ -20,18 +21,20 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/iwlwifi)
             DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
     file(REMOVE_RECURSE ${LINUX_FOLDER})
     ##
-    
+    execute_process(COMMAND bash -c "patch -p1 < ../iwlmvm-mod.patch"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/iwlwifi)
 endif()
 
 # call Kbuild for building
 execute_process(COMMAND uname -r OUTPUT_VARIABLE KERNVER
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
 set(KDIR "/lib/modules/${KERNVER}/build")
-# set(DRIVER_FILES iwlmvm.ko)
-# set(KBUILD_CMD $(MAKE) -C ${KDIR} modules M=${CMAKE_CURRENT_BINARY_DIR} src=${CMAKE_CURRENT_SOURCE_DIR})
-# add_custom_command(
-#         OUTPUT ${DRIVER_FILES}
-#         COMMAND ${KBUILD_CMD}
-#         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/mvm)
-# add_custom_target(module ALL DEPENDS ${DRIVER_FILES})  #defautl target
-# add_custom_target(cleanup COMMAND ${KBUILD_CMD} clean) #clean
+set(DRIVER_FILES iwlmvm.ko)
+set(KBUILD_CMD $(MAKE) -C ${KDIR} modules M=${CMAKE_CURRENT_BINARY_DIR} src=${CMAKE_CURRENT_SOURCE_DIR}/iwlwifi/mvm)
+add_custom_command(
+        OUTPUT ${DRIVER_FILES}
+        COMMAND ${KBUILD_CMD}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        VERBATIM)
+add_custom_target(module ALL DEPENDS ${DRIVER_FILES})  #defautl target
+add_custom_target(cleanup COMMAND ${KBUILD_CMD} clean) #clean
