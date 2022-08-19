@@ -31,7 +31,7 @@ add_custom_target(cleanup_wlsops COMMAND ${KBUILD_CMD} clean)        #clean
 # install target
 # INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DRIVER_FILE}
 #         DESTINATION ${INSTALL_DIRECTORY})
-        
+
 # add custom target
 add_custom_target(insmod
         COMMAND sudo rmmod iwlmvm
@@ -41,3 +41,5 @@ add_custom_target(rmmod
         COMMAND sudo rmmod ${DRIVER_NAME}
         COMMAND sudo rmmod iwlmvm
         COMMAND sudo modprobe iwlmvm)
+add_custom_target(dmesg
+        COMMAND sudo dmesg | grep --color 'wlsops:')
