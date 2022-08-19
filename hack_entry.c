@@ -20,6 +20,7 @@ int read_loop(void *data)
         schedule();
         if (mmap_read((char *)&kParam,sizeof(kParam)))
         {
+            //FIXME: kParam is NULL pointer?
             wls_conf_tx(kParam);
         }
     }
