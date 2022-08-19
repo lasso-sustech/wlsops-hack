@@ -15,7 +15,7 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/iwlwifi)
     endif()
     if (NOT EXISTS ${LINUX_FOLDER})
         file(ARCHIVE_EXTRACT INPUT ${LINUX_ARCHIVE}
-                DESTINATION ${LINUX_FOLDER} VERBOSE)
+                DESTINATION ${LINUX_FOLDER})
     endif()
     ##
     file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/drivers/net/wireless/intel/iwlwifi
