@@ -20,6 +20,14 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/iwlwifi)
     ##
     file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/drivers/net/wireless/intel/iwlwifi
             DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
+    file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/net/mac80211/ieee80211_i.h
+            DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/../intrinsic)
+    file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/net/mac80211/sta_info.h
+            DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/../intrinsic)
+    file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/net/mac80211/key.h
+            DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/../intrinsic)
+    file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/net/mac80211/debug.h
+            DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/../intrinsic)
     file(REMOVE_RECURSE ${LINUX_FOLDER})
     ##
     execute_process(COMMAND bash -c "patch -p1 < ../iwlmvm-mod.patch"
