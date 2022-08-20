@@ -20,11 +20,8 @@ struct mmap_info
     info_blk *blk;
 };
 
-int setTxPrior(void);
-int setTxNormal(void);
-int setTxLast(void);
-
 int w_init(void);
 void w_fini(void);
+int set_tx_params(uint16_t ac, uint8_t aifs, uint16_t cw_min, uint16_t cw_max);
 
 #endif
