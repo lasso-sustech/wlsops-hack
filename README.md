@@ -23,9 +23,12 @@ cd build && cmake ..
 make
 ```
 
+> We use a custom `iwlmvm` build together with the repo. You can disable it with `cmake -DBUILD_IWLMVM=OFF ..`
+
 ### How to Use
 > Make sure that you have at least one wireless NIC enabled;
-1. First of all, `make insmod` to install the built kernel modules, where `wlsops_hack` will use the first wireless NIC registered in the system;
 
-2. Run `sudo ./wlsctrl/wlsctrl` to apply the action.
+1. Run `sudo insmod wlsops/wlsops_hack.ko` to install the built kernel modules, where `wlsops_hack` will use the first wireless NIC registered in the system;
 
+2. Run `sudo ./wlsctrl/wlsctrl.py` to apply the actions.
+> You can use `chmod u+s ./wlsctrl/wlsctrl.py` to avoid tedious usage of `sudo`.

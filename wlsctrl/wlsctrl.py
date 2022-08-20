@@ -47,7 +47,7 @@ def main():
     ac_set.add_argument('cw_max', type=int, help='0 - 65535')
     ##
     ac_reset = subparsers.add_parser('reset', help='reset specific AC queue with default EDCA parameters.')
-    ac_reset.add_argument('ac',     type=str, help='AC queue index, "all" to choose all.')
+    ac_reset.add_argument('ac',   type=str, help='AC queue index, "all" to choose all.')
     ##
     args = parser.parse_args()
     execute(args.command, args)

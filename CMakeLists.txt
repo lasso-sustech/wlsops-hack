@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 project(wlsops-hack VERSION 0.1.0)
-set(FETCHCONTENT_QUIET FALSE)
+OPTION(BUILD_IWLMVM "Build iwlmvm driver" TRUE)
 
 set(LINUX_VERSION 5.15)
 set(LINUX_URL "https://github.com/torvalds/linux/archive/refs/tags/v${LINUX_VERSION}.zip")
@@ -11,11 +11,10 @@ set(IWLMVM_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/iwlmvm)
 set(WLSOPS_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wlsops)
 
 # fetch the Linux source code
-if (NOT EXISTS ${IWLMVM_WORKING_DIRECTORY}/iwlwifi)
+if (${BUILD_IWLMVM} AND NOT EXISTS ${IWLMVM_WORKING_DIRECTORY}/iwlwifi  OR  NOT EXISTS ${WLSOPS_WORKING_DIRECTORY}/intrinsic)
     ## download Linux kernel
     if (NOT EXISTS ${LINUX_ARCHIVE})
-        file(DOWNLOAD ${LINUX_URL} ${LINUX_ARCHIVE}
-                SHOW_PROGRESS)
+        file(DOWNLOAD ${LINUX_URL} ${LINUX_ARCHIVE} SHOW_PROGRESS)
     endif()
     ## extract the archive
     if (NOT EXISTS ${LINUX_FOLDER})
@@ -28,6 +27,7 @@ if (NOT EXISTS ${IWLMVM_WORKING_DIRECTORY}/iwlwifi)
     execute_process(COMMAND bash -c "patch -p1 < ../iwlmvm-${LINUX_VERSION}.patch"
             WORKING_DIRECTORY ${IWLMVM_WORKING_DIRECTORY}/iwlwifi)
     ## update the intrinsic files
+    file(MAKE_DIRECTORY ${WLSOPS_WORKING_DIRECTORY}/intrinsic)
     file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/net/mac80211/ieee80211_i.h
             DESTINATION ${WLSOPS_WORKING_DIRECTORY}/intrinsic)
     file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/net/mac80211/sta_info.h
@@ -40,6 +40,18 @@ if (NOT EXISTS ${IWLMVM_WORKING_DIRECTORY}/iwlwifi)
     file(REMOVE_RECURSE ${LINUX_FOLDER})
 endif()
 
-add_subdirectory("iwlmvm")
+if (${BUILD_IWLMVM})
+    add_subdirectory("iwlmvm")
+endif()
 add_subdirectory("wlsops")
 add_subdirectory("wlsctrl")
+
+# add custom target
+add_custom_target(insmod
+        COMMAND sudo rmmod iwlmvm
+        COMMAND sudo insmod ${CMAKE_CURRENT_BINARY_DIR}/iwlmvm/iwlmvm.ko
+        COMMAND sudo insmod ${CMAKE_CURRENT_BINARY_DIR}/wlsops/wlsops_hack.ko)
+add_custom_target(rmmod
+        COMMAND sudo rmmod ${DRIVER_NAME}
+        COMMAND sudo rmmod iwlmvm
+        COMMAND sudo modprobe iwlmvm)
