@@ -46,10 +46,10 @@ int set_tx_params(uint16_t ac, uint8_t aifs, uint16_t cw_min, uint16_t cw_max)
     tx_params[8] = aifs;
 
     tx_params[4] = cw_min & 0xFF;
-    tx_params[5] = (cw_min>>4) & 0xFF;
+    tx_params[5] = (cw_min>>8) & 0xFF;
 
     tx_params[6] = cw_max & 0xFF;
-    tx_params[7] = (cw_max>>4) & 0xFF;
+    tx_params[7] = (cw_max>>8) & 0xFF;
 
     return w_writer(tx_params);
 }
