@@ -26,16 +26,7 @@ def reset_tx_params(ctx):
     ctx.set_tx_params(3, 7, 15, 1023)
     pass
 
-def main():
-    parser = argparse.ArgumentParser(description='wlsctrl for wlsops_hack.')
-    parser.add_argument('--reset', action='store_true', help='reset to default EDCA parameters.')
-    _nargs = '?' if '--reset' in sys.argv else 1
-    parser.add_argument('ac',     type=str, help='AC queue index, "all" to choose all.')
-    parser.add_argument('aifs',   nargs=_nargs, type=int, help='0 - 255')
-    parser.add_argument('cw_min', nargs=_nargs, type=int, help='0 - 65535')
-    parser.add_argument('cw_max', nargs=_nargs, type=int, help='0 - 65535')
-    ##
-    args = parser.parse_args()
+def execute(command, args):
     with MmapContext() as ctx:
         if args.reset:
             reset_tx_params(ctx)
@@ -43,6 +34,23 @@ def main():
             acq = [0,1,2,3] if args.ac=='all' else [int(args.ac)]
             ret = [ctx.set_tx_params(ac, args.aifs[0], args.cw_min[0], args.cw_min[0]) for ac in acq]
             print(ret)
+    pass
+
+def main():
+    parser = argparse.ArgumentParser(description='wlsctrl for wlsops_hack.')
+    subparsers = parser.add_subparsers(dest='command')
+    ##
+    ac_set = subparsers.add_parser('set', help='set specific AC queue EDCA parameters.')
+    ac_set.add_argument('ac',     type=str, help='AC queue index, "all" to choose all.')
+    ac_set.add_argument('aifs',   type=int, help='0 - 255')
+    ac_set.add_argument('cw_min', type=int, help='0 - 65535')
+    ac_set.add_argument('cw_max', type=int, help='0 - 65535')
+    ##
+    ac_reset = subparsers.add_parser('reset', help='reset specific AC queue with default EDCA parameters.')
+    ac_reset.add_argument('ac',     type=str, help='AC queue index, "all" to choose all.')
+    ##
+    args = parser.parse_args()
+    execute(args.command, args)
     pass
 
 if __name__=='__main__':
