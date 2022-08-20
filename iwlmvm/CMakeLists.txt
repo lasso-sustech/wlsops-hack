@@ -42,6 +42,7 @@ set(DRIVER_FILES iwlmvm.ko)
 set(KBUILD_CMD $(MAKE) -C ${KDIR} modules M=${CMAKE_CURRENT_BINARY_DIR} src=${IWLMVM_WORKING_DIRECTORY}/mvm)
 add_custom_command(
         OUTPUT ${DRIVER_FILES}
+        COMMAND rm -f ${DRIVER_FILES}
         COMMAND ${KBUILD_CMD}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         VERBATIM)
