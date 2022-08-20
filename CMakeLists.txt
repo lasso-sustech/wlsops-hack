@@ -1,45 +1,45 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 project(wlsops-hack VERSION 0.1.0)
-add_subdirectory("iwlmvm")
-add_subdirectory("wlsctrl")
+set(FETCHCONTENT_QUIET FALSE)
 
-# setup variables
-execute_process(COMMAND uname -r OUTPUT_VARIABLE KERNVER
-                OUTPUT_STRIP_TRAILING_WHITESPACE)
-set(KDIR "/lib/modules/${KERNVER}/build")
-set(INSTALL_DIRECTORY "/lib/modules/${KERNVER}/updates")
+set(LINUX_VERSION 5.15)
+set(LINUX_URL "https://github.com/torvalds/linux/archive/refs/tags/v${LINUX_VERSION}.zip")
+set(LINUX_NAME "linux-${LINUX_VERSION}")
+set(LINUX_ARCHIVE ${CMAKE_CURRENT_BINARY_DIR}/linux-kernel.zip)
+set(LINUX_FOLDER ${CMAKE_CURRENT_BINARY_DIR}/linux-kernel)
+set(IWLMVM_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/iwlmvm)
+set(WLSOPS_WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/wlsops)
 
-# failure check
-find_file(kernel_makefile NAMES Makefile
-            PATHS ${KDIR} NO_DEFAULT_PATH)
-if(NOT kernel_makefile)
-    message(FATAL_ERROR "There is no Makefile in ${KDIR}!")
+# fetch the Linux source code
+if (NOT EXISTS ${IWLMVM_WORKING_DIRECTORY}/iwlwifi)
+    ## download Linux kernel
+    if (NOT EXISTS ${LINUX_ARCHIVE})
+        file(DOWNLOAD ${LINUX_URL} ${LINUX_ARCHIVE}
+                SHOW_PROGRESS)
+    endif()
+    ## extract the archive
+    if (NOT EXISTS ${LINUX_FOLDER})
+        file(ARCHIVE_EXTRACT INPUT ${LINUX_ARCHIVE}
+                DESTINATION ${LINUX_FOLDER})
+    endif()
+    ## copy iwlwifi drvier into folder `iwlmvm` and apply the patch
+    file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/drivers/net/wireless/intel/iwlwifi
+            DESTINATION ${IWLMVM_WORKING_DIRECTORY})
+    execute_process(COMMAND bash -c "patch -p1 < ../iwlmvm-${LINUX_VERSION}.patch"
+            WORKING_DIRECTORY ${IWLMVM_WORKING_DIRECTORY}/iwlwifi)
+    ## update the intrinsic files
+    file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/net/mac80211/ieee80211_i.h
+            DESTINATION ${WLSOPS_WORKING_DIRECTORY}/intrinsic)
+    file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/net/mac80211/sta_info.h
+            DESTINATION ${WLSOPS_WORKING_DIRECTORY}/intrinsic)
+    file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/net/mac80211/key.h
+            DESTINATION ${WLSOPS_WORKING_DIRECTORY}/intrinsic)
+    file(COPY ${LINUX_FOLDER}/${LINUX_NAME}/net/mac80211/debug.h
+            DESTINATION ${WLSOPS_WORKING_DIRECTORY}/intrinsic)
+    ## remove the unarchived temporary files
+    file(REMOVE_RECURSE ${LINUX_FOLDER})
 endif()
 
-# call Kbuild for building
-set(DRIVER_NAME wlsops_hack)
-set(DRIVER_FILE wlsops_hack.ko)
-set(KBUILD_CMD $(MAKE) -C ${KDIR} modules M=${CMAKE_CURRENT_BINARY_DIR} src=${CMAKE_CURRENT_SOURCE_DIR})
-add_custom_command(
-        OUTPUT ${DRIVER_FILE}
-        COMMAND ${KBUILD_CMD}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        DEPENDS hack_entry.c hack_mmap.c wlsops.c VERBATIM)
-add_custom_target(module_wlsops ALL DEPENDS ${DRIVER_FILE})   #defautl target
-add_custom_target(cleanup_wlsops COMMAND ${KBUILD_CMD} clean) #clean
-
-# install target
-# INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DRIVER_FILE}
-#         DESTINATION ${INSTALL_DIRECTORY})
-
-# add custom target
-add_custom_target(insmod
-        COMMAND sudo rmmod iwlmvm
-        COMMAND sudo insmod iwlmvm/iwlmvm.ko
-        COMMAND sudo insmod ${DRIVER_FILE})
-add_custom_target(rmmod
-        COMMAND sudo rmmod ${DRIVER_NAME}
-        COMMAND sudo rmmod iwlmvm
-        COMMAND sudo modprobe iwlmvm)
-add_custom_target(dmesg
-        COMMAND sudo dmesg | grep --color 'wlsops:')
+add_subdirectory("iwlmvm")
+add_subdirectory("wlsops")
+add_subdirectory("wlsctrl")
