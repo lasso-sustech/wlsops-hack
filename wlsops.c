@@ -14,10 +14,13 @@ int wls_hack_init()
         if( dev->ieee80211_ptr ) // is a 802.11 device
         {
             wls_vif = wdev_to_ieee80211_vif(dev->ieee80211_ptr);
-            wls_local = (struct ieee80211_local *) wdev_priv(dev->ieee80211_ptr);
-            wls_hw = &wls_local->hw;
-            printh("find 802.11 device: %s\n", dev->name);
-            break;
+            if (wls_vif) {
+                wls_local = (struct ieee80211_local *) wdev_priv(dev->ieee80211_ptr);
+                wls_hw = &wls_local->hw;
+                printh("find 802.11 device: %s\n", dev->name);
+                printh("wls_vif: %p, wls_local: %p, wls_hw:%p\n", wls_vif, wls_local, wls_hw);
+                break;
+            }
         }
     }
 

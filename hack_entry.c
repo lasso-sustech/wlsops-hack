@@ -20,8 +20,7 @@ int read_loop(void *data)
         schedule();
         if (mmap_read((char *)&kParam,sizeof(kParam)))
         {
-            printh("at least here.\n");
-            printh("%d: (%d, %d, %d)", kParam.ac, kParam.aifs, kParam.cw_min, kParam.cw_max);
+            // printh("%d: (%d, %d, %d)", kParam.ac, kParam.aifs, kParam.cw_min, kParam.cw_max);
             wls_conf_tx(kParam);
         }
     }
