@@ -6,6 +6,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent.resolve()
 
+TX_PARAMS = {
+    0 : {'aifs':2, 'cw_min':3,  'cw_max':7},
+    1 : {'aifs':2, 'cw_min':7,  'cw_max':15},
+    2 : {'aifs':3, 'cw_min':15, 'cw_max':1023},
+    3 : {'aifs':7, 'cw_min':15, 'cw_max':1023}
+}
+
 class MmapContext:
     def __init__(self) -> None:
         self.lib = ctypes.CDLL( str(ROOT/'libwlsctrl.so') )
@@ -20,10 +27,10 @@ class MmapContext:
     pass
 
 def reset_tx_params(ctx):
-    ctx.set_tx_params(0, 2, 3,  7)
-    ctx.set_tx_params(1, 2, 7,  15)
-    ctx.set_tx_params(2, 3, 15, 1023)
-    ctx.set_tx_params(3, 7, 15, 1023)
+    ctx.set_tx_params(0, TX_PARAMS[0]['aifs'], TX_PARAMS[0]['cw_min'], TX_PARAMS[0]['cw_max'])
+    ctx.set_tx_params(1, TX_PARAMS[1]['aifs'], TX_PARAMS[1]['cw_min'], TX_PARAMS[1]['cw_max'])
+    ctx.set_tx_params(2, TX_PARAMS[2]['aifs'], TX_PARAMS[2]['cw_min'], TX_PARAMS[2]['cw_max'])
+    ctx.set_tx_params(3, TX_PARAMS[3]['aifs'], TX_PARAMS[3]['cw_min'], TX_PARAMS[3]['cw_max'])
     pass
 
 def execute(command, args):
@@ -32,8 +39,12 @@ def execute(command, args):
             reset_tx_params(ctx)
         elif command=='set':
             acq = [0,1,2,3] if args.ac=='all' else [int(args.ac)]
-            ret = [ctx.set_tx_params(ac, args.aifs, args.cw_min, args.cw_min) for ac in acq]
-            print(ret)
+            for ac in acq:
+                aifs = args.aifs if args.aifs>0 else TX_PARAMS[ac]['aifs']
+                cw_min = args.cw_min if args.cw_min>0 else TX_PARAMS[ac]['cw_min']
+                cw_max = args.cw_max if args.cw_max>0 else TX_PARAMS[ac]['cw_max']
+                ret = ctx.set_tx_params(ac, aifs, cw_min, cw_max)
+                print(f'set AC{ac}: {ret}.')
         else:
             print(f'Nothing happened.')
     pass
