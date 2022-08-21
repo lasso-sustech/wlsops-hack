@@ -50,8 +50,9 @@ add_subdirectory("wlsctrl")
 add_custom_target(insmod
         COMMAND sudo rmmod iwlmvm
         COMMAND sudo insmod ${CMAKE_CURRENT_BINARY_DIR}/iwlmvm/iwlmvm.ko
+        COMMAND sleep 0.5
         COMMAND sudo insmod ${CMAKE_CURRENT_BINARY_DIR}/wlsops/wlsops_hack.ko)
 add_custom_target(rmmod
-        COMMAND sudo rmmod ${DRIVER_NAME}
+        COMMAND sudo rmmod wlsops_hack
         COMMAND sudo rmmod iwlmvm
         COMMAND sudo modprobe iwlmvm)
