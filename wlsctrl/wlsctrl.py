@@ -28,12 +28,14 @@ def reset_tx_params(ctx):
 
 def execute(command, args):
     with MmapContext() as ctx:
-        if args.reset:
+        if command=='reset':
             reset_tx_params(ctx)
-        else:
+        elif command=='set':
             acq = [0,1,2,3] if args.ac=='all' else [int(args.ac)]
-            ret = [ctx.set_tx_params(ac, args.aifs[0], args.cw_min[0], args.cw_min[0]) for ac in acq]
+            ret = [ctx.set_tx_params(ac, args.aifs, args.cw_min, args.cw_min) for ac in acq]
             print(ret)
+        else:
+            print(f'Nothing happened.')
     pass
 
 def main():
