@@ -28,25 +28,25 @@ def get_next_point():
     return (next_time, time_delta)
 
 CHOICES = [
-    (15, 15),
-    (15, 31),
-    (15, 63),
-    (15, 127),
-    (15, 511),
-    (15, 1023), #default
-    (31,  1023),
-    # (63,  1023),
-    # (127, 1023),
-    # (255, 1023),
-    # (511, 1023),
-    # (1023, 1023),
+    # (15, 15),
+    # (15, 31),
+    # (15, 63),
+    # (15, 127),
+    # (15, 511),
+    # (15, 1023), #default
+    # (31,  1023),
+    (63,  1023),
+    (127, 1023),
+    (255, 1023),
+    (511, 1023),
+    (1023, 1023),
 ]
 
 results = [ list() for _ in CHOICES ]
 
 try:
     for i,params in enumerate(CHOICES):
-        for k in range(3):
+        for k in range(5):
             # next_time, time_delta = get_next_point()
             # print(f'Next running point: {next_time}')
             ##
