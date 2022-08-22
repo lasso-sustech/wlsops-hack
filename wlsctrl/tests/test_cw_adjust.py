@@ -33,16 +33,13 @@ CHOICES = [
     (15, 63),
     (15, 127),
     (15, 511),
-    ##
     (15, 1023), #default
-    ##
     (31,  1023),
-    (63,  1023),
-    (127, 1023),
-    (255, 1023),
-    (511, 1023),
-    ##
-    (1023, 1023),
+    # (63,  1023),
+    # (127, 1023),
+    # (255, 1023),
+    # (511, 1023),
+    # (1023, 1023),
 ]
 
 results = [ list() for _ in CHOICES ]
@@ -50,13 +47,13 @@ results = [ list() for _ in CHOICES ]
 try:
     for i,params in enumerate(CHOICES):
         for k in range(3):
-            next_time, time_delta = get_next_point()
-            print(f'Next running point: {next_time}')
-            time.sleep( time_delta )
+            # next_time, time_delta = get_next_point()
+            # print(f'Next running point: {next_time}')
             ##
             print(f'set-{i}, tries {k}: running ...', end=' ', flush=True)
             with MmapContext() as ctx:
                 set_tx_params(ctx, [2], -1, *params)
+                time.sleep(1.0)
                 _elapsed = timeit(file_transfer, )
                 results[i].append( _elapsed )
             print(f'done. [{_elapsed}]')
