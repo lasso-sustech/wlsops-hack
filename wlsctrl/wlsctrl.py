@@ -33,18 +33,22 @@ def reset_tx_params(ctx):
     ctx.set_tx_params(3, TX_PARAMS[3]['aifs'], TX_PARAMS[3]['cw_min'], TX_PARAMS[3]['cw_max'])
     pass
 
+def set_tx_params(ctx, acq:list, aifs:int, cw_min:int, cw_max:int):
+    for ac in acq:
+        aifs   = aifs   if aifs>0   else TX_PARAMS[ac]['aifs']
+        cw_min = cw_min if cw_min>0 else TX_PARAMS[ac]['cw_min']
+        cw_max = cw_max if cw_max>0 else TX_PARAMS[ac]['cw_max']
+        ret = ctx.set_tx_params(ac, aifs, cw_min, cw_max)
+        print(f'set AC{ac}: {ret}.')
+    pass
+
 def execute(command, args):
     with MmapContext() as ctx:
         if command=='reset':
             reset_tx_params(ctx)
         elif command=='set':
             acq = [0,1,2,3] if args.ac=='all' else [int(args.ac)]
-            for ac in acq:
-                aifs = args.aifs if args.aifs>0 else TX_PARAMS[ac]['aifs']
-                cw_min = args.cw_min if args.cw_min>0 else TX_PARAMS[ac]['cw_min']
-                cw_max = args.cw_max if args.cw_max>0 else TX_PARAMS[ac]['cw_max']
-                ret = ctx.set_tx_params(ac, aifs, cw_min, cw_max)
-                print(f'set AC{ac}: {ret}.')
+            set_tx_params(ctx, acq, args.aifs, args.cw_min, args.cw_max)
         else:
             print(f'Nothing happened.')
     pass
