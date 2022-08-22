@@ -2,9 +2,8 @@
 import sys
 import ctypes
 import argparse
+import pkg_resources
 from pathlib import Path
-
-ROOT = Path(__file__).parent.resolve()
 
 TX_PARAMS = {
     0 : {'aifs':2, 'cw_min':3,  'cw_max':7},
@@ -15,7 +14,8 @@ TX_PARAMS = {
 
 class MmapContext:
     def __init__(self) -> None:
-        self.lib = ctypes.CDLL( str(ROOT/'libwlsctrl.so') )
+        _file = pkg_resources.resource_filename('wlsctrl', 'libwlsctrl.so')
+        self.lib = ctypes.CDLL( _file )
         pass
     
     def __enter__(self):
@@ -24,6 +24,7 @@ class MmapContext:
     
     def __exit__(self, exc_type, exc_value, exc_tb):
         self.lib.w_fini()
+        pass
     pass
 
 def reset_tx_params(ctx):
