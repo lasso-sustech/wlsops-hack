@@ -40,7 +40,7 @@ def set_tx_params(ctx, acq:list, aifs:int, cw_min:int, cw_max:int):
         cw_min = cw_min if cw_min>0 else TX_PARAMS[ac]['cw_min']
         cw_max = cw_max if cw_max>0 else TX_PARAMS[ac]['cw_max']
         ret = ctx.set_tx_params(ac, aifs, cw_min, cw_max)
-        print(f'set AC{ac}: {ret}.')
+        # print(f'set AC{ac}: {ret}.')
     pass
 
 def execute(command, args):
