@@ -4,7 +4,7 @@ import subprocess as sp
 from datetime import datetime
 from wlsctrl.wlsctrl import set_tx_params, MmapContext
 
-SHELL_RUN  = lambda x: sp.run(x, stdout=sp.PIPE, stderr=sp.PIPE, check=True, shell=True)
+SHELL_RUN  = lambda x: sp.run(x, stderr=sp.PIPE, check=True, shell=True)
 
 def timeit(func, *args, **kwargs):
     _t = time.time()
@@ -53,7 +53,6 @@ try:
             print(f'set-{i}, tries {k}: running ...', end=' ', flush=True)
             with MmapContext() as ctx:
                 set_tx_params(ctx, [2], -1, *params)
-                time.sleep(1.0)
                 _elapsed = timeit(file_transfer, )
                 results[i].append( _elapsed )
             print(f'done. [{_elapsed}]')
