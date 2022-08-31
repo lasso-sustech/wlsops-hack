@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import sys
+import sys, time
 import subprocess as sp
 from wlsctrl.wlsctrl import set_tx_params, MmapContext
 
@@ -19,8 +19,13 @@ def run_ac2_default():
     SHELL_RUN(f'iperf3 -c 192.168.3.18 -p {IPERF_PORT} -n {FILE_SIZE} --tos 100')
 
 def run_ac2_with_cw_min(cw_min:int):
-    assert( cw_min in range(16) )
-    set_ac2_cw_min(cw_min); run_ac2_default()
+    assert( cw_min in range(1,16) )
+    set_ac2_cw_min(cw_min)
+    run_ac2_default()
+    ##
+    time.sleep(1)
+    set_ac2_cw_min(-1)
+    pass
 
 if __name__=='__main__':
     __usage = f'Usage: {__file__} ac0/ac2 <cw_min>'
