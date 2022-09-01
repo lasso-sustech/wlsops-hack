@@ -11,7 +11,7 @@ The memory r/w is currently implemented in synchronized block writing/reading (t
 
 ### Build
 - build the kernel module
-    > We use a custom `iwlmvm` build together with this repo. You can disable it with `cmake -DBUILD_IWLMVM=OFF ..`
+    > We use a custom `iwlmvm` build in this repo. You can disable it with `cmake -DBUILD_IWLMVM=OFF ..`
     ```bash
     mkdir build
     cd build && cmake ..
@@ -29,6 +29,6 @@ The memory r/w is currently implemented in synchronized block writing/reading (t
 ### How to Use
 > Make sure that you have at least one wireless NIC enabled.
 
-1. Run `sudo insmod wlsops/wlsops_hack.ko` to install the built kernel modules, where `wlsops_hack` will use the first wireless NIC found in the system;
+1. Run `sudo insmod build/wlsops/wlsops_hack.ko` to install the built kernel modules, where `wlsops_hack` will use the first wireless NIC found in the system;
 
 2. Run the test in `wlsctrl/tests` with root permission.
