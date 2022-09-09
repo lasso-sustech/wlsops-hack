@@ -5,22 +5,25 @@ from wlsctrl.wlsctrl import set_tx_params, MmapContext
 
 SHELL_RUN  = lambda x: sp.run(x, stderr=sp.PIPE, check=True, shell=True)
 
-IPERF_ADDR = '192.168.3.18'
+IPERF_ADDR = '192.168.137.1'
 IPERF_PORT = 5201
-FILE_SIZE  = '100M'
+
+USE_UDP    = '-u -b 0'
+TEST_BLOCK = '-n 100M'
+TEST_TIME  = '-t 30'
 
 def set_ac2_cw_min(cw_min):
     with MmapContext() as ctx:
         set_tx_params(ctx, [2], -1, cw_min, -1)
 
 def run_ac0_default():
-    SHELL_RUN(f'iperf3 -c {IPERF_ADDR} -p {IPERF_PORT} -n {FILE_SIZE} --tos 200')
+    SHELL_RUN(f'iperf3 -c {IPERF_ADDR} -p {IPERF_PORT} {USE_UDP} {TEST_TIME} --tos 200')
 
 def run_ac2_default():
-    SHELL_RUN(f'iperf3 -c {IPERF_ADDR} -p {IPERF_PORT} -n {FILE_SIZE} --tos 100')
+    SHELL_RUN(f'iperf3 -c {IPERF_ADDR} -p {IPERF_PORT} {USE_UDP} {TEST_TIME} --tos 100')
 
 def run_ac2_with_cw_min(cw_min:int):
-    assert( cw_min in range(1,16) )
+    assert( cw_min in range(1,1024) )
     set_ac2_cw_min(cw_min)
     run_ac2_default()
     ##
