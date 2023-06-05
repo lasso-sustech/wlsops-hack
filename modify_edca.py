@@ -12,7 +12,7 @@ def main(args):
     else:
         try:
             with MmapContext() as ctx:
-                set_tx_params(ctx, [args.ac], args.cw_min, args.cw_max, args.aifs)
+                set_tx_params(ctx, [args.ac], args.aifs, args.cw_min, args.cw_max)
                 print("Set ac%d: cw_min=%d, cw_max=%d, aifs=%d" % (args.ac, args.cw_min, args.cw_max, args.aifs))
         except Exception as e:
             raise e
