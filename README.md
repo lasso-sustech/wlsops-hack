@@ -11,7 +11,7 @@ The memory r/w is currently implemented in synchronized block writing/reading (t
 
 ### Build
 - build the kernel module
-    > We use a custom `iwlmvm` build in this repo. You can disable it with `cmake -DBUILD_IWLMVM=OFF ..`
+    > We use a custom `iwlmvm` build in this repo. You can disable it with `cmake -DBUILD_IWLMVM=OFF ..` or activate DVM with `-DBUILD_IWLMVM=OFF -DBUILD_IWLDVM=TRUE`
     ```bash
     mkdir build
     cd build && cmake ..
